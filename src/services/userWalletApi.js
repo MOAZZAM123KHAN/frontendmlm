@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5001/api/wallet";
+// const API_URL = "http://localhost:5001/api/wallet";
+const API_URL = `${process.env.REACT_APP_API_URL}/wallet`;
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");

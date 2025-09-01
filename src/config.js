@@ -1,2 +1,5 @@
 // src/config.js
-export const API_URL = 'http://localhost:5001/api'; // Updated to match backend port
+// export const API_URL = 'http://localhost:5001/api'; // Updated to match backend port
+
+// src/config.js
+export const API_URL = process.env.REACT_APP_API_URL;
