@@ -13,11 +13,15 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
   // ✅ Validation schema
   const validationSchema = Yup.object({
     userId: Yup.string()
-      .matches(/^user([1-9]|10)$/, 'User ID must be user1 to user10')
+      // .matches(/^user([1-9]|10)$/, 'User ID must be user1 to user10')
+    // .matches(/^user\([1-10000]|10\)$/, 'User ID must be user1 to user10')
+       .matches(/^user([1-9][0-9]?|100)$/, 'User ID must be user1 to user100')
+
       .required('User ID is required'),
     password: Yup.string().required('Password is required'),
     parentMobile: Yup.string()
-      .matches(/^\+?[\d\s\-\(\)]{10,15}$/, 'Please enter a valid mobile number')
+      // .matches(/^\+?[\d\s\-\(\)]{10,15}$/, 'Please enter a valid mobile number')
+     .matches(/^\+?[\d\s\-()]{10,15}$/, 'Please enter a valid mobile number')
       .required('Mobile number is required'),
   });
 

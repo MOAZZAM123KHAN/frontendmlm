@@ -29,6 +29,9 @@ const UserDashboard = ({ userData, onLogout, onDataUpdate, onUserIdSelect }) => 
         onDataUpdate(response.data);
         setShowCreateForm(false);
         resetForm();
+
+        // Redirect to the newly created user ID page or dashboard
+      navigate(`/dashboard/${response.data.newUserId}`);
       } else {
         setError(response.message || 'Failed to create new ID');
       }

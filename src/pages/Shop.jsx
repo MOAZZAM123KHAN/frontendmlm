@@ -18,7 +18,7 @@ const Shop = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('featured');
 
-  const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
 
   useEffect(() => {
     const fetchProducts = async () => {

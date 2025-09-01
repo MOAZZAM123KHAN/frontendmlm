@@ -19,7 +19,7 @@ const Orders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Mock data for testing when API fails
+    // Mock data for testing when API fails
   const mockOrders = [
     {
       id: 'ORD001',
@@ -79,6 +79,7 @@ const Orders = () => {
       }
     }
   ];
+
 
   useEffect(() => {
     const fetchOrders = async () => {

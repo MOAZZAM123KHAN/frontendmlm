@@ -118,6 +118,9 @@ const Checkout = () => {
       clearCart();
       setOrderPlaced(true);
       
+         // ✅ Redirect user to order details page
+    navigate(`/user/${userId}/orders/${orderId}`);
+
     } catch (error) {
       console.error('Error placing order:', error);
       setError(error.message || 'There was an error placing your order. Please try again.');
