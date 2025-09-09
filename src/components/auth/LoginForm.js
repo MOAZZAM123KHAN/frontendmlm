@@ -1,3 +1,427 @@
+// // import React, { useState } from 'react';
+// // import { Formik, Form, Field, ErrorMessage } from 'formik';
+// // import * as Yup from 'yup';
+// // import { authAPI } from '../../services/api';
+// // import { Link } from 'react-router-dom';
+
+// // const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
+// //   const [isLoading, setIsLoading] = useState(false);
+// //   const [error, setError] = useState('');
+// //   const [userIds, setUserIds] = useState([]);
+// //   const [showDashboard, setShowDashboard] = useState(false);
+
+// //   // ✅ Validation schema
+// //   const validationSchema = Yup.object({
+// //     userId: Yup.string()
+// //       // .matches(/^user([1-9]|10)$/, 'User ID must be user1 to user10')
+// //     // .matches(/^user\([1-10000]|10\)$/, 'User ID must be user1 to user10')
+// //        .matches(/^user([1-9][0-9]?|100)$/, 'User ID must be user1 to user100')
+
+// //       .required('User ID is required'),
+// //     password: Yup.string().required('Password is required'),
+// //     parentMobile: Yup.string()
+// //       // .matches(/^\+?[\d\s\-\(\)]{10,15}$/, 'Please enter a valid mobile number')
+// //      .matches(/^\+?[\d\s\-()]{10,15}$/, 'Please enter a valid mobile number')
+// //       .required('Mobile number is required'),
+// //   });
+
+// //   // ✅ Submit handler
+// //   const handleSubmit = async (values, { setSubmitting }) => {
+// //     setIsLoading(true);
+// //     setError('');
+// //     setUserIds([]);
+// //     setShowDashboard(false);
+
+// //     try {
+// //       const response = await authAPI.login({
+// //         userId: values.userId,
+// //         password: values.password,
+// //         parentMobile: values.parentMobile,
+// //       });
+
+// //       if (response.success) {
+// //         // 🟢 Save token
+// //         if (response.token) {
+// //           localStorage.setItem("token", response.token);
+// //           console.log("Saved token:", response.token);
+// //         }
+
+// //         // 🟢 Save userId
+// //         if (response.data?.userId) {
+// //           localStorage.setItem("userId", response.data.userId);
+// //           console.log("Saved userId:", response.data.userId);
+// //         } else {
+// //           localStorage.setItem("userId", values.userId);
+// //           console.log("Saved userId (fallback):", values.userId);
+// //         }
+
+// //         // 🟢 Save all linked userIds
+// //         if (response.data?.allUserIds) {
+// //           setUserIds(response.data.allUserIds);
+// //         }
+
+// //         setShowDashboard(true);
+
+// //         // 🟢 Save admin flag
+// //         if (response.data?.isAdmin) {
+// //           localStorage.setItem("isAdmin", "true");
+// //         } else {
+// //           localStorage.removeItem("isAdmin");
+// //         }
+
+// //         onLoginSuccess && onLoginSuccess(response.data);
+// //       } else {
+// //         setError(response.message || 'Login failed');
+// //       }
+// //     } catch (err) {
+// //       setError(err.message || 'Login failed. Please try again.');
+// //     } finally {
+// //       setIsLoading(false);
+// //       setSubmitting(false);
+// //     }
+// //   };
+
+// //   // ✅ Show all user IDs (if multiple accounts linked to same mobile)
+// //   if (showDashboard && userIds.length > 0) {
+// //     return (
+// //       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+// //         <div className="max-w-md w-full space-y-8">
+// //           <h2 className="text-2xl font-bold text-center">User IDs for this mobile</h2>
+// //           <ul className="mt-4 mb-6">
+// //             {userIds.map((id) => (
+// //               <li key={id} className="text-lg text-center py-1">{id}</li>
+// //             ))}
+// //           </ul>
+// //           <button 
+// //             onClick={() => setShowDashboard(false)} 
+// //             className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md"
+// //           >
+// //             Login as another user
+// //           </button>
+// //         </div>
+// //       </div>
+// //     );
+// //   }
+
+// //   // ✅ Login form
+// //   return (
+// //     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+// //       <div className="max-w-md w-full space-y-8">
+// //         <div>
+// //           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+// //             Sign in to your account
+// //           </h2>
+// //           <p className="mt-2 text-center text-sm text-gray-600">
+// //             Enter your user ID, password, and mobile number
+// //           </p>
+// //         </div>
+
+// //         <Formik
+// //           initialValues={{ userId: '', password: '', parentMobile: '' }}
+// //           validationSchema={validationSchema}
+// //           onSubmit={handleSubmit}
+// //         >
+// //           {({ isSubmitting }) => (
+// //             <Form className="mt-8 space-y-6">
+// //               {/* User ID */}
+// //               <div>
+// //                 <label htmlFor="userId" className="block text-sm font-medium text-gray-700">
+// //                   User ID
+// //                 </label>
+// //                 <Field
+// //                   id="userId"
+// //                   name="userId"
+// //                   type="text"
+// //                   required
+// //                   placeholder="user1, user2, ... user10"
+// //                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+// //                              focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+// //                 />
+// //                 <ErrorMessage name="userId" component="div" className="mt-1 text-sm text-red-600" />
+// //               </div>
+
+// //               {/* Password */}
+// //               <div>
+// //                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+// //                   Password
+// //                 </label>
+// //                 <Field
+// //                   id="password"
+// //                   name="password"
+// //                   type="password"
+// //                   required
+// //                   placeholder="Enter your password"
+// //                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+// //                              focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+// //                 />
+// //                 <ErrorMessage name="password" component="div" className="mt-1 text-sm text-red-600" />
+
+// //                 <div className="mt-2 text-right">
+// //                   <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
+// //                     Forgot your password?
+// //                   </Link>
+// //                 </div>
+// //               </div>
+
+// //               {/* Mobile */}
+// //               <div>
+// //                 <label htmlFor="parentMobile" className="block text-sm font-medium text-gray-700">
+// //                   Mobile Number
+// //                 </label>
+// //                 <Field
+// //                   id="parentMobile"
+// //                   name="parentMobile"
+// //                   type="tel"
+// //                   required
+// //                   placeholder="Enter your mobile number"
+// //                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+// //                              focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+// //                 />
+// //                 <ErrorMessage name="parentMobile" component="div" className="mt-1 text-sm text-red-600" />
+// //               </div>
+
+// //               {/* Error message */}
+// //               {error && (
+// //                 <div className="rounded-md bg-red-50 p-4">
+// //                   <div className="text-sm font-medium text-red-800">{error}</div>
+// //                 </div>
+// //               )}
+
+// //               {/* Submit button */}
+// //               <div>
+// //                 <button
+// //                   type="submit"
+// //                   disabled={isSubmitting || isLoading}
+// //                   className="group relative w-full flex justify-center py-2 px-4 
+// //                              border border-transparent text-sm font-medium rounded-md 
+// //                              text-white bg-indigo-600 hover:bg-indigo-700 
+// //                              focus:outline-none focus:ring-2 focus:ring-offset-2 
+// //                              focus:ring-indigo-500 disabled:opacity-50"
+// //                 >
+// //                   {isLoading ? 'Signing in...' : 'Sign in'}
+// //                 </button>
+// //               </div>
+
+// //               {/* Switch to signup */}
+// //               <div className="text-center">
+// //                 <button
+// //                   type="button"
+// //                   onClick={onSwitchToSignup}
+// //                   className="font-medium text-indigo-600 hover:text-indigo-500"
+// //                 >
+// //                   Don't have an account? Sign up
+// //                 </button>
+// //               </div>
+// //             </Form>
+// //           )}
+// //         </Formik>
+// //       </div>
+// //     </div>
+// //   );
+// // };
+
+// // export default LoginForm;
+
+
+
+
+// import React, { useState } from 'react';
+// import { Formik, Form, Field, ErrorMessage } from 'formik';
+// import * as Yup from 'yup';
+// import { authAPI } from '../../services/api';
+// import { Link } from 'react-router-dom';
+
+// const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [error, setError] = useState('');
+//   const [userIds, setUserIds] = useState([]);
+//   const [showDashboard, setShowDashboard] = useState(false);
+
+//   // ✅ Validation schema
+//   const validationSchema = Yup.object({
+//     userId: Yup.string()
+//       .matches(/^user([1-9][0-9]?|100)$/, 'User ID must be user1 to user100')
+//       .required('User ID is required'),
+//     password: Yup.string().required('Password is required'),
+//     mobileNumber: Yup.string()
+//       .matches(/^\d{10}$/, 'Enter a valid 10-digit mobile number')
+//       .required('Mobile number is required'),
+//   });
+
+//   // ✅ Submit handler
+//   const handleSubmit = async (values, { setSubmitting }) => {
+//     setIsLoading(true);
+//     setError('');
+//     setUserIds([]);
+//     setShowDashboard(false);
+
+//     try {
+//       // Send mobileNumber with +91
+//       const response = await authAPI.login({
+//         userId: values.userId,
+//         password: values.password,
+//         mobileNumber: `+91${values.mobileNumber}`,
+//       });
+
+//       if (response.success) {
+//         // 🟢 Save token
+//         if (response.token) localStorage.setItem('token', response.token);
+
+//         // 🟢 Save userId
+//         if (response.data?.userId) {
+//           localStorage.setItem('userId', response.data.userId);
+//         } else {
+//           localStorage.setItem('userId', values.userId);
+//         }
+
+//         // 🟢 Save all linked userIds
+//         if (response.data?.allUserIds) setUserIds(response.data.allUserIds);
+
+//         setShowDashboard(true);
+
+//         // 🟢 Save admin flag
+//         if (response.data?.isAdmin) localStorage.setItem('isAdmin', 'true');
+//         else localStorage.removeItem('isAdmin');
+
+//         onLoginSuccess && onLoginSuccess(response.data);
+//       } else {
+//         setError(response.message || 'Login failed');
+//       }
+//     } catch (err) {
+//       setError(err.message || 'Login failed. Please try again.');
+//     } finally {
+//       setIsLoading(false);
+//       setSubmitting(false);
+//     }
+//   };
+
+//   // ✅ Show all linked user IDs
+//   if (showDashboard && userIds.length > 0) {
+//     return (
+//       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+//         <div className="max-w-md w-full space-y-8">
+//           <h2 className="text-2xl font-bold text-center">User IDs for this mobile</h2>
+//           <ul className="mt-4 mb-6">
+//             {userIds.map((id) => (
+//               <li key={id} className="text-lg text-center py-1">{id}</li>
+//             ))}
+//           </ul>
+//           <button 
+//             onClick={() => setShowDashboard(false)} 
+//             className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md"
+//           >
+//             Login as another user
+//           </button>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // ✅ Login form
+//   return (
+//     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+//       <div className="max-w-md w-full space-y-8">
+//         <div>
+//           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+//             Sign in to your account
+//           </h2>
+//           <p className="mt-2 text-center text-sm text-gray-600">
+//             Enter your user ID, password, and mobile number
+//           </p>
+//         </div>
+
+//         <Formik
+//           initialValues={{ userId: '', password: '', mobileNumber: '' }}
+//           validationSchema={validationSchema}
+//           onSubmit={handleSubmit}
+//         >
+//           {({ isSubmitting }) => (
+//             <Form className="mt-8 space-y-6">
+//               {/* User ID */}
+//               <div>
+//                 <label htmlFor="userId" className="block text-sm font-medium text-gray-700">User ID</label>
+//                 <Field
+//                   id="userId"
+//                   name="userId"
+//                   type="text"
+//                   placeholder="user1, user2, ... user100"
+//                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+//                              focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+//                 />
+//                 <ErrorMessage name="userId" component="div" className="mt-1 text-sm text-red-600" />
+//               </div>
+
+//               {/* Password */}
+//               <div>
+//                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+//                 <Field
+//                   id="password"
+//                   name="password"
+//                   type="password"
+//                   placeholder="Enter your password"
+//                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+//                              focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+//                 />
+//                 <ErrorMessage name="password" component="div" className="mt-1 text-sm text-red-600" />
+//               </div>
+
+//               {/* Mobile */}
+//               <div>
+//                 <label htmlFor="mobileNumber" className="block text-sm font-medium text-gray-700">Mobile Number</label>
+//                 <Field
+//                   id="mobileNumber"
+//                   name="mobileNumber"
+//                   type="tel"
+//                   placeholder="Enter your 10-digit mobile number"
+//                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+//                              focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+//                 />
+//                 <ErrorMessage name="mobileNumber" component="div" className="mt-1 text-sm text-red-600" />
+//               </div>
+
+//               {/* Error message */}
+//               {error && (
+//                 <div className="rounded-md bg-red-50 p-4">
+//                   <div className="text-sm font-medium text-red-800">{error}</div>
+//                 </div>
+//               )}
+
+//               {/* Submit button */}
+//               <div>
+//                 <button
+//                   type="submit"
+//                   disabled={isSubmitting || isLoading}
+//                   className="group relative w-full flex justify-center py-2 px-4 
+//                              border border-transparent text-sm font-medium rounded-md 
+//                              text-white bg-indigo-600 hover:bg-indigo-700 
+//                              focus:outline-none focus:ring-2 focus:ring-offset-2 
+//                              focus:ring-indigo-500 disabled:opacity-50"
+//                 >
+//                   {isLoading ? 'Signing in...' : 'Sign in'}
+//                 </button>
+//               </div>
+
+//               {/* Switch to signup */}
+//               <div className="text-center">
+//                 <button
+//                   type="button"
+//                   onClick={onSwitchToSignup}
+//                   className="font-medium text-indigo-600 hover:text-indigo-500"
+//                 >
+//                   Don't have an account? Sign up
+//                 </button>
+//               </div>
+//             </Form>
+//           )}
+//         </Formik>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default LoginForm;
+
+
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -13,15 +437,11 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
   // ✅ Validation schema
   const validationSchema = Yup.object({
     userId: Yup.string()
-      // .matches(/^user([1-9]|10)$/, 'User ID must be user1 to user10')
-    // .matches(/^user\([1-10000]|10\)$/, 'User ID must be user1 to user10')
-       .matches(/^user([1-9][0-9]?|100)$/, 'User ID must be user1 to user100')
-
-      .required('User ID is required'),
+      .matches(/^user([1-9][0-9]?|100)$/, 'User ID must be user1 to user100')
+      .notRequired(), // optional now
     password: Yup.string().required('Password is required'),
-    parentMobile: Yup.string()
-      // .matches(/^\+?[\d\s\-\(\)]{10,15}$/, 'Please enter a valid mobile number')
-     .matches(/^\+?[\d\s\-()]{10,15}$/, 'Please enter a valid mobile number')
+    mobileNumber: Yup.string()
+      .matches(/^\d{10}$/, 'Enter a valid 10-digit mobile number')
       .required('Mobile number is required'),
   });
 
@@ -33,55 +453,47 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
     setShowDashboard(false);
 
     try {
-      const response = await authAPI.login({
-        userId: values.userId,
-        password: values.password,
-        parentMobile: values.parentMobile,
-      });
+      const payload = {
+        userId: values.userId ? values.userId.trim() : undefined,
+        password: values.password.trim(),
+        mobileNumber: values.mobileNumber.trim(), // removed +91
+      };
+
+      const response = await authAPI.login(payload);
 
       if (response.success) {
         // 🟢 Save token
-        if (response.token) {
-          localStorage.setItem("token", response.token);
-          console.log("Saved token:", response.token);
-        }
+        if (response.token) localStorage.setItem('token', response.token);
 
         // 🟢 Save userId
         if (response.data?.userId) {
-          localStorage.setItem("userId", response.data.userId);
-          console.log("Saved userId:", response.data.userId);
+          localStorage.setItem('userId', response.data.userId);
         } else {
-          localStorage.setItem("userId", values.userId);
-          console.log("Saved userId (fallback):", values.userId);
+          localStorage.setItem('userId', values.userId || '');
         }
 
         // 🟢 Save all linked userIds
-        if (response.data?.allUserIds) {
-          setUserIds(response.data.allUserIds);
-        }
+        if (response.data?.allUserIds) setUserIds(response.data.allUserIds);
 
         setShowDashboard(true);
 
         // 🟢 Save admin flag
-        if (response.data?.isAdmin) {
-          localStorage.setItem("isAdmin", "true");
-        } else {
-          localStorage.removeItem("isAdmin");
-        }
+        if (response.data?.isAdmin) localStorage.setItem('isAdmin', 'true');
+        else localStorage.removeItem('isAdmin');
 
         onLoginSuccess && onLoginSuccess(response.data);
       } else {
         setError(response.message || 'Login failed');
       }
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
+      setError(err.message || err?.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
       setSubmitting(false);
     }
   };
 
-  // ✅ Show all user IDs (if multiple accounts linked to same mobile)
+  // ✅ Show all linked user IDs
   if (showDashboard && userIds.length > 0) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -112,12 +524,12 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
             Sign in to your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Enter your user ID, password, and mobile number
+            Enter your user ID (optional), password, and mobile number
           </p>
         </div>
 
         <Formik
-          initialValues={{ userId: '', password: '', parentMobile: '' }}
+          initialValues={{ userId: '', password: '', mobileNumber: '' }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
@@ -125,15 +537,12 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
             <Form className="mt-8 space-y-6">
               {/* User ID */}
               <div>
-                <label htmlFor="userId" className="block text-sm font-medium text-gray-700">
-                  User ID
-                </label>
+                <label htmlFor="userId" className="block text-sm font-medium text-gray-700">User ID (optional)</label>
                 <Field
                   id="userId"
                   name="userId"
                   type="text"
-                  required
-                  placeholder="user1, user2, ... user10"
+                  placeholder="user1, user2, ... user100"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
                              focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
@@ -142,42 +551,30 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
 
               {/* Password */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
                 <Field
                   id="password"
                   name="password"
                   type="password"
-                  required
                   placeholder="Enter your password"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
                              focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
                 <ErrorMessage name="password" component="div" className="mt-1 text-sm text-red-600" />
-
-                <div className="mt-2 text-right">
-                  <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
-                    Forgot your password?
-                  </Link>
-                </div>
               </div>
 
               {/* Mobile */}
               <div>
-                <label htmlFor="parentMobile" className="block text-sm font-medium text-gray-700">
-                  Mobile Number
-                </label>
+                <label htmlFor="mobileNumber" className="block text-sm font-medium text-gray-700">Mobile Number</label>
                 <Field
-                  id="parentMobile"
-                  name="parentMobile"
+                  id="mobileNumber"
+                  name="mobileNumber"
                   type="tel"
-                  required
-                  placeholder="Enter your mobile number"
+                  placeholder="Enter your 10-digit mobile number"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
                              focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
-                <ErrorMessage name="parentMobile" component="div" className="mt-1 text-sm text-red-600" />
+                <ErrorMessage name="mobileNumber" component="div" className="mt-1 text-sm text-red-600" />
               </div>
 
               {/* Error message */}
@@ -221,4 +618,3 @@ const LoginForm = ({ onLoginSuccess, onSwitchToSignup }) => {
 };
 
 export default LoginForm;
-

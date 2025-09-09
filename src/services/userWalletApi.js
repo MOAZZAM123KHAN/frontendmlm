@@ -37,17 +37,32 @@ const userWalletAPI = {
     }
   },
 
-  requestWithdrawal: async (userId, data) => {
+  // requestWithdrawal: async (userId, data) => {
+  //   try {
+  //     const res = await axios.post(`${API_URL}/withdraw/${userId}`, data, {
+  //       headers: getAuthHeaders(),
+  //     });
+  //     return res;
+  //   } catch (error) {
+  //     console.error("❌ requestWithdrawal error:", error.response?.data || error.message);
+  //     throw error;
+  //   }
+  // },
+
+  requestWithdrawal: async (data) => { // remove userId from param
     try {
-      const res = await axios.post(`${API_URL}/withdraw/${userId}`, data, {
-        headers: getAuthHeaders(),
-      });
-      return res;
+        const res = await axios.post(`${API_URL}/withdraw`, data, { 
+            headers: getAuthHeaders()
+        });
+        return res.data;
     } catch (error) {
-      console.error("❌ requestWithdrawal error:", error.response?.data || error.message);
-      throw error;
+        console.error("❌ requestWithdrawal error:", error.response?.data || error.message);
+        throw error;
     }
-  },
+},
+
 };
 
 export default userWalletAPI;
+
+
